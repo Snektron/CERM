@@ -148,6 +148,7 @@ void main()
 			graphics_set_pixel(x, y, graphics_colorv(&color));
 		}
 
+	while(1);
 	_OS(os_GetKey());
 	pgrm_CleanUp();
 }
