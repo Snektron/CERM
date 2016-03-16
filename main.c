@@ -1,3 +1,8 @@
+/*
+ * CERM by Snektron
+ * From https://github.com/Snektron/CERM
+ * Improved for speed by Adriweb
+ */
 
 #include <tice.h>
 #include <stdint.h>
@@ -10,35 +15,30 @@
 #define MAX_STEPS 50
 #define EPSILON 0.01
 
-const double pi = 3.14159265;
+#define M_PI 3.14159265
+#define min(a,b) (((a)<(b))?(a):(b))
+#define max(a,b) (((a)>(b))?(a):(b))
 
-const double fov = 67.0 / 180.0 * pi;
-vec3_t dir = {0,0,-1};
-vec3_t pos = {0,1,5};
-vec3_t up = {0,1,0};
+const double fov = 67.0 / 180.0 * M_PI;
+
+vec3_t dir   = {0,0,-1};
+vec3_t pos   = {0,1,5};
+vec3_t up    = {0,1,0};
 vec3_t light = {1,1,1};
 vec3_t right;
 
-double max(double a, double b) { return a > b ? a : b; }
-double min(double a, double b) { return a < b ? a : b; }
-
-double f(vec3_t* p);
 vec3_t* getNormal(vec3_t* p, vec3_t* n);
-float diff(vec3_t* n, vec3_t* l);
 double raymarch(vec3_t* ro, vec3_t* rd, vec3_t* color);
 void raymain(vec2_t* uv, vec3_t* color);
 void getRay(vec2_t* uv, vec3_t* rd);
 void rayinit();
 
-double sdSphere(vec3_t* p, double r){ return vec3_length(p)-r;}
-double sdPlane(vec3_t* p, vec3_t* n, float h){ return vec3_dot(p, n) + h;}
+#define sdSphere(p, r)   (vec3_length((p))-r)
+#define sdPlane(p, n, h) (vec3_dot((p), (n)) + (h))
 
-double add(double d1, double d2){return min(d1, d2);}
-
-double f(vec3_t* p)
-{
-	return add(sdPlane(p, &up, 0), sdSphere(p, 1.0));
-}
+#define add(d1,d2)  min((d1), (d2))
+#define diff(n, l)  max(0.0, vec3_dot((n), (l)))
+#define f(p)        add(sdPlane((p), &up, 0), sdSphere((p), 1.0))
 
 vec3_t* getNormal(vec3_t* p, vec3_t* n)
 {
@@ -51,11 +51,6 @@ vec3_t* getNormal(vec3_t* p, vec3_t* n)
 
 	vec3_normalize(n);
 	return n;
-}
-
-double diff(vec3_t* n, vec3_t* l)
-{
-	return max(0.0, vec3_dot(n, l));
 }
 
 double raymarch(vec3_t* ro, vec3_t* rd, vec3_t* color)
@@ -110,7 +105,7 @@ void getRay(vec2_t* uv, vec3_t* rd)
 void raymain(vec2_t* uv, vec3_t* color)
 {
 	vec3_t rd, ro;
-	double d;
+	// double d;
 
 	uv->x -= 0.5;
 	uv->y -= 0.5;
@@ -140,6 +135,7 @@ void main()
 
 	rayinit();
 	for (x=0; x<320; x++)
+    {
 		for (y=0; y<240; y++)
 		{
 			uv.x = (double) (x+0.5) / 320.0;
@@ -147,10 +143,9 @@ void main()
 			raymain(&uv, &color);
 			graphics_set_pixel(x, y, graphics_colorv(&color));
 		}
+    }
 
 	while(1);
 	_OS(os_GetKey());
 	pgrm_CleanUp();
 }
-
-//#include "test.c"

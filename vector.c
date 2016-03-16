@@ -33,7 +33,7 @@ void vec2_copy(vec2_t* a, vec2_t* b)
 // normalize vector
 vec2_t* vec2_normalize(vec2_t* a)
 {
-	double length = sqrt(a->x * a->x + a->y * a->y);
+	double length = vec2_length(a);
 	a->x /= length;
 	a->y /= length;
 	return a;
@@ -41,7 +41,7 @@ vec2_t* vec2_normalize(vec2_t* a)
 
 vec3_t* vec3_normalize(vec3_t* a)
 {
-	double length = sqrt(a->x * a->x + a->y * a->y + a->z * a->z);
+	double length = vec3_length(a);
 	a->x /= length;
 	a->y /= length;
 	a->z /= length;
@@ -50,7 +50,7 @@ vec3_t* vec3_normalize(vec3_t* a)
 
 vec3_t* vec3_setLength(vec3_t* a, double x)
 {
-	double length = sqrt(a->x * a->x + a->y * a->y + a->z * a->z);
+	double length = vec3_length(a);
 	a->x = a->x * x / length;
 	a->y = a->x * x / length;
 	a->z = a->x * x / length;
@@ -90,19 +90,4 @@ vec3_t* vec3_scale(vec3_t* a, double x)
 	a->y *= x;
 	a->z *= x;
 	return a;
-}
-
-double vec2_length(vec2_t* a)
-{
-	return sqrt(a->x*a->x + a->y*a->y);
-}
-
-double vec3_length(vec3_t* a)
-{
-	return sqrt(a->x * a->x + a->y * a->y + a->z * a->z);
-}
-
-double vec3_dot(vec3_t* a, vec3_t* b)
-{
-	return a->x * b->x + a->y * b->y + a->z * b->z;
 }
