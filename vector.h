@@ -1,11 +1,12 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <math.h>
+
 typedef struct
 {
 	double x, y;
 } vec2_t;
-
 
 typedef struct
 {
@@ -31,9 +32,10 @@ vec3_t* vec3_mul(vec3_t* a, vec3_t* b, vec3_t* out);
 
 vec3_t* vec3_scale(vec3_t* a, double x);
 
-double vec2_length(vec2_t* a);
-double vec3_length(vec3_t* a);
+#define vec2_length(a)  (sqrt((a)->x*(a)->x + (a)->y*(a)->y))
 
-double vec3_dot(vec3_t* a, vec3_t* b);
+#define vec3_length(a)  (sqrt((a)->x*(a)->x + (a)->y*(a)->y + (a)->z*(a)->z))
+
+#define vec3_dot(a,b)   ((a)->x*(b)->x + (a)->y*(b)->y + (a)->z*(b)->z)
 
 #endif

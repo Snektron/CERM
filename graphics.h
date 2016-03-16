@@ -4,9 +4,24 @@
 #include <stdint.h>
 #include "vector.h"
 
-void graphics_set_pixel(uint16_t x, uint8_t y, uint16_t color);
-void graphics_clear();
-uint16_t graphics_color(float r, float b, float g);
-uint16_t graphics_colorv(vec3_t* color);
+#define VRAM_START  0xD40000
+
+#define graphics_set_vram(addr, color)  \
+        do { (*(uint24_t*)(addr)) = ((uint16_t)(color)); } while (0)
+
+#define clampcolor(c)   \
+        ((c) < 0.0 ? 0.0 : ((c) > 1.0 ? 1.0 : (c)))
+
+#define graphics_set_pixel(x, y, color)   \
+        do { if ((x) < 320 && (y) < 240) { graphics_set_vram((uint24_t*)(((y) << 9) + ((y) << 7) + ((x) << 1) + VRAM_START), (uint16_t)(color)); } } while(0)
+
+#define graphics_clear()    \
+        do { _OS(boot_ClearVRAM()); } while (0)
+
+#define graphics_color(r, g, b)   \
+        (((uint8_t) ((r) * 31.0) << 11) | ((uint8_t) ((g) * 63.0) << 5) | (uint8_t) ((b) * 31.0))
+
+#define graphics_colorv(color)  \
+        (graphics_color(clampcolor((color)->x), clampcolor((color)->y), clampcolor((color)->z)))
 
 #endif
